@@ -30,6 +30,7 @@
 #include "plugins/PongClockPlugin.h"
 #include "plugins/TickingClockPlugin.h"
 #include "plugins/DDPPlugin.h"
+#include "plugins/TixyPlugin.h"
 
 #ifdef ENABLE_SERVER
 #include "plugins/AnimationPlugin.h"
@@ -84,8 +85,8 @@ void connectToWiFi()
   wifiManager.setSTAStaticIPConfig(ip, gwy, subnet, dns);
 #endif
 
-  wifiManager.setConnectRetries(10);
-  wifiManager.setConnectTimeout(10);
+  wifiManager.setConnectRetries(5);
+  wifiManager.setConnectTimeout(5);
   wifiManager.setConfigPortalTimeout(180);
   wifiManager.setWiFiAutoReconnect(true);
   wifiManager.autoConnect(WIFI_MANAGER_SSID);
@@ -166,6 +167,7 @@ void baseSetup()
   pluginManager.addPlugin(new CirclePlugin());
   pluginManager.addPlugin(new RainPlugin());
   pluginManager.addPlugin(new FireworkPlugin());
+  pluginManager.addPlugin(new TixyPlugin());
 
 #ifdef ENABLE_SERVER
   pluginManager.addPlugin(new BigClockPlugin());
@@ -264,5 +266,5 @@ void loop()
 #ifdef ENABLE_SERVER
   cleanUpClients();
 #endif
-  delay(1);
+  delay(10);
 }
