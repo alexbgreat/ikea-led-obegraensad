@@ -48,7 +48,7 @@ void WeatherPlugin::update()
         DynamicJsonDocument doc(2048);
         deserializeJson(doc, http.getString());
 
-        int temperature = round(doc["current_condition"][0]["temp_C"].as<float>());
+        int temperature = round(doc["current_condition"][0]["temp_F"].as<float>());
         int weatherCode = doc["current_condition"][0]["weatherCode"].as<int>();
         int weatherIcon = 0;
         int iconY = 1;
