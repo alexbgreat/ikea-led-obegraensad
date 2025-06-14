@@ -4,6 +4,7 @@
 
 #define TIMER_INTERVAL_US 200
 #define GRAY_LEVELS 64 // must be a power of two
+#define GAMMA 2.2
 
 using namespace std;
 
@@ -15,11 +16,6 @@ uint8_t Screen_::getCurrentBrightness() const
 void Screen_::setBrightness(uint8_t brightness, bool shouldStore)
 {
   brightness_ = brightness;
-
-#ifndef ESP8266
-  // analogWrite disable the timer1 interrupt on esp8266
-  analogWrite(PIN_ENABLE, 255 - brightness);
-#endif
 
 #ifdef ENABLE_STORAGE
   if (shouldStore)
@@ -175,18 +171,26 @@ void Screen_::setup()
 #endif
 }
 
+uint8_t Screen_::gammaTransform(uint8_t brightness)
+{
+  double bright = brightness / 255.0;
+  return (uint8_t)(pow(bright, GAMMA) * brightness_);
+}
+
 void Screen_::setPixelAtIndex(uint8_t index, uint8_t value, uint8_t brightness)
 {
   if (index >= COLS * ROWS)
     return;
-  renderBuffer_[index] = value <= 0 || brightness <= 0 ? 0 : (brightness > 255 ? 255 : brightness);
+  brightness = gammaTransform(brightness);
+  renderBuffer_[index] = brightness * (value & 1);
 }
 
 void Screen_::setPixel(uint8_t x, uint8_t y, uint8_t value, uint8_t brightness)
 {
   if (x >= COLS || y >= ROWS)
     return;
-  renderBuffer_[y * COLS + x] = value <= 0 || brightness <= 0 ? 0 : (brightness > 255 ? 255 : brightness);
+  brightness = gammaTransform(brightness);
+  renderBuffer_[y * COLS + x] = brightness * (value & 1);
 }
 
 void Screen_::setCurrentRotation(int rotation, bool shouldPersist)

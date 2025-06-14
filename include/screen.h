@@ -56,6 +56,8 @@ public:
   void clear();
   void clearRect(int x, int y, int width, int height);
 
+  uint8_t gammaTransform(uint8_t brightness);
+
   void setPixel(uint8_t x, uint8_t y, uint8_t value, uint8_t brightness = 255);
   void setPixelAtIndex(uint8_t index, uint8_t value, uint8_t brightness = 255);
 
